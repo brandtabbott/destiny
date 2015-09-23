@@ -50,7 +50,7 @@ let createRequest = (lib, method) => {
 
                 return params;
             })
-            .then(params => fetch(HOST + template(params), _.assign(method.options, { headers: headers, body: JSON.stringify(params) })))
+            .then(params => fetch(HOST + template(params), _.assign(method.options, { headers: UTILS.HEADERS, body: JSON.stringify(params) })))
             .then(UTILS.json)
             .then(UTILS.unwrapDestinyResponse);
     };
@@ -61,13 +61,15 @@ let createRequest = (lib, method) => {
 /**
  * preparing library for export
  */
-let Destiny = (host='https://www.bungie.net/platform/Destiny/') => {
+let Destiny = (config) => {
 
-    if (_.isString(host)) {
-        HOST = host;
+    if (_.isString(config.host)) {
+        HOST = config.host;
     } else {
-        UTILS.error(`${ host } is not a valid URL.`);
+        HOST = 'https://www.bungie.net/platform/Destiny/';
     }
+
+    UTILS.HEADERS['X-API-Key'] = config.apiKey;
 
     return ENDPOINTS.reduce(createRequest, {});
 };

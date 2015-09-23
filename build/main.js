@@ -61,7 +61,7 @@ var createRequest = function createRequest(lib, method) {
 
             return params;
         }).then(function (params) {
-            return fetch(HOST + template(params), _lodash2['default'].assign(method.options, { headers: headers, body: JSON.stringify(params) }));
+            return fetch(HOST + template(params), _lodash2['default'].assign(method.options, { headers: _utils.UTILS.HEADERS, body: JSON.stringify(params) }));
         }).then(_utils.UTILS.json).then(_utils.UTILS.unwrapDestinyResponse);
     };
 
@@ -71,14 +71,15 @@ var createRequest = function createRequest(lib, method) {
 /**
  * preparing library for export
  */
-var Destiny = function Destiny() {
-    var host = arguments[0] === undefined ? 'https://www.bungie.net/platform/Destiny/' : arguments[0];
+var Destiny = function Destiny(config) {
 
-    if (_lodash2['default'].isString(host)) {
-        HOST = host;
+    if (_lodash2['default'].isString(config.host)) {
+        HOST = config.host;
     } else {
-        _utils.UTILS.error('' + host + ' is not a valid URL.');
+        HOST = 'https://www.bungie.net/platform/Destiny/';
     }
+
+    _utils.UTILS.HEADERS['X-API-Key'] = config.apiKey;
 
     return _endpoints2['default'].reduce(createRequest, {});
 };
